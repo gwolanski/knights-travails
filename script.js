@@ -1,4 +1,68 @@
-//spaces a knight can travel on the x-plane
-xOptions = [-2, -2, -1, -1, 1, 1, 2, 2];
-//spaces a knight can travel on the y-plane
-yOptions = [-1, 1, -2, 2, -2, 2, -1, 1];
+//things to keep in mind to help with efficiency:
+//reduce search space each time the knight traverses closer to its end point. 
+//don't revist nodes/coordinates that we've seen before.
+    //create a variable called that stores all the visited coordinates, perhaps an array?
+    let visitedCoordinates = ["0,0"];
+
+//BFS best for finding shortest path from one point to another
+
+
+class Coordinates {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+class KnightSolution {
+    constructor() {
+        this.head = null;
+    }
+
+
+
+    knightMoves(startCoordinates, endCoordinates) {
+        let startingCoordinates = new Coordinates(startCoordinates);
+        let endingCoordinates = new Coordinates(endCoordinates);
+        // if (this.head === null) {
+            
+        // }
+        
+
+
+        //maximum x & y coordinates
+        let yMax = 7;
+        let xMax = 7;
+
+
+
+        //This portion of the code creates an array variable, moveOptions, which contains every legal move that a knight can make. 
+
+        //spaces a knight can travel on the x-plane & y-plane
+        let xOptions = [-2, -2, -1, -1, 1, 1, 2, 2];
+        let yOptions = [-1, 1, -2, 2, -2, 2, -1, 1];
+
+        //variable that will eventualyl store all legal knight moves
+        const moveOptions = [];
+
+        for (let i = 0; i < xOptions.length; i++) {
+            moveOptions.push([xOptions[i], yOptions[i]]);  
+        }
+        console.log("moveOptions: ", moveOptions);
+
+
+
+        
+        //zero moves at start. will need to increase as knight traverses the board
+        let moves = 0;
+
+        //maybe first you would build the full list that contains all possible moves starting from a specified starting point
+        //then, use BFS to search through the list until it finds all instances ending at the specified ending point
+        //or we may need to reassess to see if we can get big o to be smaller
+    }
+}
+
+let newSolution = new KnightSolution();
+newSolution.knightMoves();
+
+
