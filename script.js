@@ -8,9 +8,10 @@
 
 
 class Coordinates {
-    constructor(x, y) {
+    constructor([x, y]) {
         this.x = x;
         this.y = y;
+        this.next = null;
     }
 }
 
@@ -23,14 +24,20 @@ class KnightSolution {
 
     knightMoves(startCoordinates, endCoordinates) {
         let startingCoordinates = new Coordinates(startCoordinates);
+        console.log("starting coordinates: ", startingCoordinates)
         let endingCoordinates = new Coordinates(endCoordinates);
+        console.log("ending coordinates: ", endingCoordinates);
         // if (this.head === null) {
             
         // }
         
 
 
-        //maximum x & y coordinates
+
+
+        //Minimum and maximum x & y coordinates. Coordinates must be >= 0 and <= 7.
+        let xMin = 0;
+        let yMin = 0;
         let yMax = 7;
         let xMax = 7;
 
@@ -59,10 +66,16 @@ class KnightSolution {
         //maybe first you would build the full list that contains all possible moves starting from a specified starting point
         //then, use BFS to search through the list until it finds all instances ending at the specified ending point
         //or we may need to reassess to see if we can get big o to be smaller
+
+        //starting from startCoordinates, search for all children of that node.
+        //increase moves counter
+        //once those children have been searched for endCoordinates, search for all children of that node.
+        //increase moves counter
+
     }
 }
 
 let newSolution = new KnightSolution();
-newSolution.knightMoves();
+newSolution.knightMoves([0,0], [1,2]);
 
 
