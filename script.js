@@ -38,13 +38,35 @@ class KnightSolution {
             let newX = coordinateX + currentOption[0];
             let newY = coordinateY + currentOption[1];
             let newMove = [newX, newY];
-            //Check if either new coordinate is between 0 and 7. If true, push to queue.
+            //Check if either new coordinate is between 0 and 7. If true, push to legalMoves.
             if (newX >= xyMin && newX <= xyMax && newY >= xyMin && newY <= xyMax) {
                 legalMoves.push([newMove]);
             }
         }
         console.log("legalMoves: ", legalMoves);
         return legalMoves;
+    }
+
+    //Extract only the legal moves that haven't been visited previously
+    extractNewMoves(legalMoves, visited) {
+        let notVisited = [];
+        
+        for (let i = 0; i < legalMoves.length; i++) {
+            let currentLegalMove = legalMoves[i];
+            let legalX = currentLegalMove[0];
+            let legalY = currentLegalMove[1];
+            for (let j = 0; j < visited.length; j++) {
+                let currentVisited = visited[j];
+                let visitedX = currentVisited[0];
+                let visitedY = currentVisited[1];
+                //Compare the x and y values of both legalMoves[i] and visited[j]. Only add coordinates from legalMoves to notVisited if they are unique.
+                if (legalX !== visitedX && legalY !== visitedY) {
+                    notVisited.push(currentLegalMove);
+                }
+            }
+        }
+        console.log("notVisited in extractNewMoves: ", notVisited)
+        return notVisited;
     }
 
     knightMoves(startCoordinates, endCoordinates) {
@@ -62,7 +84,7 @@ class KnightSolution {
         let xOptions = [-2, -2, -1, -1, 1, 1, 2, 2];
         let yOptions = [-1, 1, -2, 2, -2, 2, -1, 1];
 
-        //variable that will eventualyl store all legal knight moves
+        //variable that will eventually store all legal knight moves
         const moveOptions = [];
 
         for (let i = 0; i < xOptions.length; i++) {
@@ -72,12 +94,6 @@ class KnightSolution {
 
 
 
-        // while (this.root >= xyMin && this.root <= xyMax) {
-
-        // }
-
-        // find all possible legal moves from the starting point that are >= 0 and <= 7
-        this.findLegalMoves(startCoordinates, moveOptions);
 
         //declare start of list as being the starting coordinates
         if (this.root === null) {
@@ -90,11 +106,20 @@ class KnightSolution {
         let queue = [this.root];
 
 
-        //BFS logic to search the tree. As node is visited, take it out of queue and place it in visitedCoordinates
+        //BFS logic to search the tree. As node is visited, take it out of queue and place it in visitedCoordinates.
         while (queue.length > 0) {
             let current = queue.shift();
             visitedCoordinates.push(current);
         }
+
+        //Find all possible legal moves from the starting point that are >= 0 and <= 7.
+        let legalMoves = this.findLegalMoves(startCoordinates, moveOptions);
+    
+        //Check for legal moves that have not already been added to visitedCoordinates.
+        let newMoves = this.extractNewMoves(legalMoves, visitedCoordinates);
+
+        //Add all moves to the queue if they are both legal and have not been visited yet.
+        queue.push(...newMoves);
 
         
         //zero moves at start. will need to increase as knight traverses the board
