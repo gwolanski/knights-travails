@@ -21,6 +21,24 @@ class KnightSolution {
         this.root = null;
     }
 
+    findMoveOptions() {
+        //This portion of the code creates an array variable, moveOptions, which contains every legal move that a knight can make. 
+
+        //spaces a knight can travel on the x-plane & y-plane
+        let xOptions = [-2, -2, -1, -1, 1, 1, 2, 2];
+        let yOptions = [-1, 1, -2, 2, -2, 2, -1, 1];
+
+        //variable that will eventually store all legal knight moves
+        const moveOptions = [];
+
+        for (let i = 0; i < xOptions.length; i++) {
+            moveOptions.push([xOptions[i], yOptions[i]]);  
+        }
+        console.log("moveOptions: ", moveOptions)
+
+        return moveOptions;
+    }
+
     //find all possible legal moves from specified coordinates that are >= 0 and <= 7
     findLegalMoves(coordinates, options) {
         let coordinateX = coordinates.x;
@@ -51,24 +69,35 @@ class KnightSolution {
     //Extract only the legal moves that haven't been visited previously
     extractNewMoves(legalMoves, visited) {
         let notVisited = [];
+        console.log("visited.length: ",  visited.length);
         
+    
         for (let i = 0; i < legalMoves.length; i++) {
             let currentLegalMove = legalMoves[i];
             console.log("currentLegalMove: ", currentLegalMove);
             let legalX = currentLegalMove[0];
             let legalY = currentLegalMove[1];
-            for (let j = 0; j < visited.length; j++) {
-                let currentVisited = visited[j];
-                console.log("currentVisited: ", currentVisited);
-                let visitedX = currentVisited[0];
-                let visitedY = currentVisited[1];
-                //Compare the x and y values of both legalMoves[i] and visited[j]. Only add coordinates from legalMoves to notVisited if they are unique.
-                if (legalX !== visitedX && legalY !== visitedY) {
-                    notVisited.push(currentLegalMove);
+
+            if (visited.length > 0) {
+                for (let j = 0; j < visited.length; j++) {
+                    let currentVisited = visited[j];
+                    console.log("currentVisited: ", currentVisited);
+                    let visitedX = currentVisited[0];
+                    let visitedY = currentVisited[1];
+                    //Compare the x and y values of both legalMoves[i] and visited[j]. Only add coordinates from legalMoves to notVisited if they are unique.
+                    if (legalX !== visitedX && legalY !== visitedY) {
+                        // let currentLegalMoveCoordinates = new Coordinates([currentLegalMove[0], currentLegalMove[1]]);
+                        notVisited.push(currentLegalMove);
+                    }
                 }
+            } else {
+                console.log("no visits")
             }
+            
         }
+
         console.log("notVisited in extractNewMoves: ", notVisited)
+        
         return notVisited;
     }
 
@@ -82,26 +111,13 @@ class KnightSolution {
         //zero moves at start. will need to increase as knight traverses the board
         let moves = 0;
 
-
-        //This portion of the code creates an array variable, moveOptions, which contains every legal move that a knight can make. 
-
-        //spaces a knight can travel on the x-plane & y-plane
-        let xOptions = [-2, -2, -1, -1, 1, 1, 2, 2];
-        let yOptions = [-1, 1, -2, 2, -2, 2, -1, 1];
-
-        //variable that will eventually store all legal knight moves
-        const moveOptions = [];
-
-        for (let i = 0; i < xOptions.length; i++) {
-            moveOptions.push([xOptions[i], yOptions[i]]);  
-        }
-        console.log("moveOptions: ", moveOptions)
+        let moveOptions = this.findMoveOptions();
 
         //declare start of list as being the starting coordinates
         //commenting this out since I commented our startingCoordinates above
         if (this.root === null) {
-           this.root = startCoordinates; 
-        
+           this.root = [startingCoordinates]; 
+            console.log("this.root: ", this.root)
         }
         
         //variable that will store all visited coordinates
@@ -114,30 +130,31 @@ class KnightSolution {
         while (queue.length > 0) {
             let current = queue.shift();
             let currentCoordinates = new Coordinates(current);
+            visitedCoordinates.push(current);
             console.log("currentCoordinates: ", currentCoordinates);
             if (currentCoordinates.x === endingCoordinates.x && currentCoordinates.y === endingCoordinates.y) {
                 return;
                 //this if statement likely needs more work
             } else {
                 //Find all possible legal moves from the starting point that are >= 0 and <= 7.
-                let legalMoves = this.findLegalMoves(currentCoordinates, moveOptions);
-                console.log("legalMoves: " + legalMoves)
+                let currentLegalMoves = this.findLegalMoves(currentCoordinates, moveOptions);
+                console.log("currentLegalMoves: ",  currentLegalMoves)
             
                 //Check for legal moves that have not already been added to visitedCoordinates.
-                let newMoves = this.extractNewMoves(legalMoves, visitedCoordinates);
-                console.log("newMoves: " + newMoves);
+                let newMoves = this.extractNewMoves(currentLegalMoves, visitedCoordinates);
+                console.log("newMoves: ",  newMoves);
 
                 //Add all moves to the queue if they are both legal and have not been visited yet.
                 queue.push(...newMoves);
             }
-            visitedCoordinates.push(current);
-
             
+
+            console.log("queue: ", queue) 
         }
 
 
 
-        console.log("queue: ", queue)
+        
 
         //order of operations:
         //DONE - first you take the starting coordinates, set moves to 0, push them into the queue. 
@@ -165,6 +182,6 @@ class KnightSolution {
 }
 
 let newSolution = new KnightSolution();
-newSolution.knightMoves([1,2], [3,4]);
+newSolution.knightMoves([0,0], [1,2]);
 
 
