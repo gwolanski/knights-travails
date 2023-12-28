@@ -13,11 +13,11 @@ function getAllMoveOptions() {
     return moveOptions;
 }
 //This function creates an array variable, legalMoves, that slims down the moveOptions result from above if outside the bounds of an 8x8 chessboard.
-function getLegalMoves(coordinates) {
+function getLegalMoves(currentObject) {
     let allMoveOptions = getAllMoveOptions();
 
-    let coordinateX = coordinates[0];
-    let coordinateY = coordinates[1];
+    let coordinateX = currentObject.coordinates[0];
+    let coordinateY = currentObject.coordinates[1];
 
     //Minimum and maximum x & y coordinates on board. Coordinates must be >= 0 and <= 7.
     let xyMin = 0;
@@ -41,8 +41,8 @@ function getLegalMoves(coordinates) {
     return legalMoves;
 }
 
-function getUnvisitedLegalMoves(currentCoordinates, visitedArray) {
-    let legalMoves = getLegalMoves(currentCoordinates);
+function getUnvisitedLegalMoves(currentObject, visitedArray) {
+    let legalMoves = getLegalMoves(currentObject);
     console.log("legalMoves: " + legalMoves);
     let notVisited = [];
 
@@ -50,7 +50,7 @@ function getUnvisitedLegalMoves(currentCoordinates, visitedArray) {
         let currentLegalX = legalMoves[i][0];
         let currentLegalY = legalMoves[i][1];
         console.log("current legalMove: ", legalMoves[i]);
-        console.log("visitedArray: " + visitedArray);
+        console.log("visitedArray: ", visitedArray);
 
         const hasLegalMoveBeenVisited = visitedArray.some(node => {
             console.log("node: ", node);
@@ -71,17 +71,25 @@ function getUnvisitedLegalMoves(currentCoordinates, visitedArray) {
 function knightMoves(startingCoordinates, endingCoordinates) {
     let visitedCoordinates = [];
 
-    let queue = [startingCoordinates];
-    console.log("queue: "+ queue);
+    let startingObject = {
+        coordinates: startingCoordinates,
+        path: `[${startingCoordinates}]`,
+        moves: 0
+    }
+
+    let queue = [startingObject];
+    console.log("queue start coordinates: ", queue[0].coordinates + "-path-" + queue[0].path + "-moves-" + queue[0].moves);
 
     while (queue.length > 0) {
         let current = queue.shift();
-        console.log("current: "+ current);
+        console.log("current: ", current.coordinates + "-path-" + current.path + "-moves-" + current.moves);
+        console.log("current object: ", current);
         visitedCoordinates.push(current);
 
-        if (current[0] === endingCoordinates[0] && current[1] === endingCoordinates[1]){
+        if (current.coordinates[0] === endingCoordinates[0] && current.coordinates[1] === endingCoordinates[1]){
             console.log("endindCoordinates?:", current);
-            console.log("You've made it in # moves. Here is your path:")
+            console.log(`You've made it in ${current.moves} moves.`);
+            console.log(`Here is your path: ${current.path}`)
             return;
         }
 
@@ -90,11 +98,17 @@ function knightMoves(startingCoordinates, endingCoordinates) {
 
         unvisitedLegalMoves.forEach((move) => {
             const isUnvisitedInQueue =  queue.some(node => {
-                return (move === node)
+                return (move === node.coordinates)
             });
             if (!isUnvisitedInQueue) {
                 console.log("move: ", move);
-                queue.push(move);
+                let moveObject = {
+                    coordinates: move,
+                    path: `${current.path} -> [${move}]`,
+                    moves: current.moves + 1
+                }
+                console.log("moveObject: ", moveObject);
+                queue.push(moveObject);
             }
         })
         
@@ -102,4 +116,4 @@ function knightMoves(startingCoordinates, endingCoordinates) {
     }   
 }
 
-knightMoves([0,0], [3,3]);
+knightMoves([0,0], [2,0]);
