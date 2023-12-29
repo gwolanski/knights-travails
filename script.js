@@ -79,7 +79,7 @@ function knightMoves(startingCoordinates, endingCoordinates) {
         visitedCoordinates.push(current);
 
         if (current.coordinates[0] === endingCoordinates[0] && current.coordinates[1] === endingCoordinates[1]){
-            console.log(`You've made it in ${current.moves} move(s).`);
+            console.log(`You made it in ${current.moves} move(s).`);
             console.log(`Here is your path: ${current.path}`)
             return;
         }

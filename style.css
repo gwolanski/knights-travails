@@ -1,0 +1,30 @@
+html {
+    background-color: rgb(230, 235, 222);
+}
+
+#title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+#box {
+    margin: 50px auto;
+    border: 2px solid black;
+    width: 600px;
+    padding: 10px;
+    background-color: rgb(251, 248, 233);
+}
+
+.box-text {
+    padding: 5px;
+}
+
+#function {
+    font-weight: bold;
+    text-align: center;
+}
+
+#example {
+    text-align: center;
+}
