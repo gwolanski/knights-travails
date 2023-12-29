@@ -13,11 +13,11 @@ function getAllMoveOptions() {
     return moveOptions;
 }
 //This function creates an array variable, legalMoves, that slims down the moveOptions result from above if outside the bounds of an 8x8 chessboard.
-function getLegalMoves(currentObject) {
+function getLegalMoves(currentCoordinates) {
     let allMoveOptions = getAllMoveOptions();
 
-    let coordinateX = currentObject.coordinates[0];
-    let coordinateY = currentObject.coordinates[1];
+    let coordinateX = currentCoordinates[0];
+    let coordinateY = currentCoordinates[1];
 
     //Minimum and maximum x & y coordinates on board. Coordinates must be >= 0 and <= 7.
     let xyMin = 0;
@@ -41,27 +41,22 @@ function getLegalMoves(currentObject) {
     return legalMoves;
 }
 
-function getUnvisitedLegalMoves(currentObject, visitedArray) {
-    let legalMoves = getLegalMoves(currentObject);
-    console.log("legalMoves: " + legalMoves);
+//This function creates an array variable, notVisited, that slims down the legalMoves result from above to contain only coordinates that haven't been previously visited.
+function getUnvisitedLegalMoves(currentCoordinates, visitedArray) {
+    let legalMoves = getLegalMoves(currentCoordinates);
     let notVisited = [];
 
     for (let i = 0; i < legalMoves.length; i++) {
         let currentLegalX = legalMoves[i][0];
         let currentLegalY = legalMoves[i][1];
-        console.log("current legalMove: ", legalMoves[i]);
-        console.log("visitedArray: ", visitedArray);
 
         const hasLegalMoveBeenVisited = visitedArray.some(node => {
-            console.log("node: ", node);
-            console.log((node[0] === currentLegalX && node[1] === currentLegalY));
             return (node[0] === currentLegalX && node[1] === currentLegalY);
         });
-        console.log("hasLegalMoveBeenVisited: " + hasLegalMoveBeenVisited);
+
         if (!hasLegalMoveBeenVisited) {
             notVisited.push([currentLegalX, currentLegalY]);
         }
-        console.log("notVisited: " + notVisited);
     }
 
     return notVisited;
@@ -78,42 +73,34 @@ function knightMoves(startingCoordinates, endingCoordinates) {
     }
 
     let queue = [startingObject];
-    console.log("queue start coordinates: ", queue[0].coordinates + "-path-" + queue[0].path + "-moves-" + queue[0].moves);
 
     while (queue.length > 0) {
         let current = queue.shift();
-        console.log("current: ", current.coordinates + "-path-" + current.path + "-moves-" + current.moves);
-        console.log("current object: ", current);
         visitedCoordinates.push(current);
 
         if (current.coordinates[0] === endingCoordinates[0] && current.coordinates[1] === endingCoordinates[1]){
-            console.log("endindCoordinates?:", current);
-            console.log(`You've made it in ${current.moves} moves.`);
+            console.log(`You've made it in ${current.moves} move(s).`);
             console.log(`Here is your path: ${current.path}`)
             return;
         }
 
-        let unvisitedLegalMoves = getUnvisitedLegalMoves(current, visitedCoordinates);
-        console.log("unvisitedLegalMoves: ", unvisitedLegalMoves);
+        let unvisitedLegalMoves = getUnvisitedLegalMoves(current.coordinates, visitedCoordinates);
 
         unvisitedLegalMoves.forEach((move) => {
             const isUnvisitedInQueue =  queue.some(node => {
                 return (move === node.coordinates)
             });
             if (!isUnvisitedInQueue) {
-                console.log("move: ", move);
                 let moveObject = {
                     coordinates: move,
                     path: `${current.path} -> [${move}]`,
                     moves: current.moves + 1
                 }
-                console.log("moveObject: ", moveObject);
+                
                 queue.push(moveObject);
             }
         })
-        
-        console.log("queue while: "+ queue)
     }   
 }
 
-knightMoves([0,0], [2,0]);
+knightMoves([3,3],[7,7]);
